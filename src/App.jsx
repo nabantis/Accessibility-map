@@ -15,7 +15,8 @@ import ModMap from './pages/modMap'
 
 // High contrast mode: get from localStorage or user context
 function useHighContrast() {
-  const { user } = useAuth();
+  const auth = useAuth();
+  const user = auth?.user ?? null;
   // Try to get from localStorage (persisted), fallback to false
   const [highContrast, setHighContrast] = React.useState(() => {
     const stored = localStorage.getItem('highContrast');
@@ -50,14 +51,20 @@ function AuthLoadingScreen() {
 }
 
 function ProtectedRoute({ children }) {
-  const { user, loading } = useAuth()
+  const auth = useAuth() || {};
+  const user = auth.user ?? null;
+  const loading = auth.loading ?? false;
   if (loading) return <AuthLoadingScreen />
   if (!user) return <Navigate to="/login" replace />
   return children
 }
 
 function ModeratorRoute({ children }) {
-  const { user, loading, roleLoading, isModerator } = useAuth()
+  const auth = useAuth() || {};
+  const user = auth.user ?? null;
+  const loading = auth.loading ?? false;
+  const roleLoading = auth.roleLoading ?? false;
+  const isModerator = auth.isModerator ?? false;
   if (loading || roleLoading) return <AuthLoadingScreen />
   if (!user) return <Navigate to="/login" replace />
   if (!isModerator) return <Navigate to="/map" replace />

@@ -13,6 +13,7 @@ if (useMock) {
 
 	const auth = {
 		getSession: async () => ({ data: { session: currentUser ? { user: currentUser } : null }, error: null }),
+		getUser: async () => ({ data: { user: currentUser }, error: null }),
 		onAuthStateChange: (callback) => {
 			listeners.add(callback);
 			const subscription = { unsubscribe: () => listeners.delete(callback) };
@@ -39,9 +40,15 @@ if (useMock) {
 
 	const from = (/*table*/) => ({
 		select: () => ({
+			// supports .eq(...).single() or .maybeSingle()
 			eq: () => ({
-				maybeSingle: async () => ({ data: null, error: null })
-			})
+				maybeSingle: async () => ({ data: null, error: null }),
+				single: async () => ({ data: null, error: null }),
+			}),
+			maybeSingle: async () => ({ data: null, error: null }),
+			single: async () => ({ data: null, error: null }),
+			// when called without chaining, return empty array
+			then: async (resolve) => resolve({ data: [], error: null }),
 		})
 	});
 
