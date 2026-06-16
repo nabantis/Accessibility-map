@@ -9,7 +9,8 @@ import { useAuth } from '../../contexts/AuthContext';
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const { isModerator, signOut } = useAuth();
+  const auth = useAuth() || {};
+  const { isModerator = false, signOut = async () => {} } = auth;
   const menuRef = useRef(null);
   const toggleRef = useRef(null);
 
