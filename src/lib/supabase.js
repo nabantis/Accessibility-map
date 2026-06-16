@@ -50,19 +50,27 @@ if (useMock) {
 		}
 	};
 
-	const from = (/*table*/) => ({
-		select: () => ({
-			// supports .eq(...).single() or .maybeSingle()
-			eq: () => ({
-				maybeSingle: async () => ({ data: null, error: null }),
-				single: async () => ({ data: null, error: null }),
-			}),
+	// Helper to create a chainable query builder
+	const createQueryBuilder = () => {
+		const builder = {
+			// Chainable methods that return builder for fluent API
+			select: function() { return this; },
+			order: function() { return this; },
+			limit: function() { return this; },
+			eq: function() { return this; },
+			// Terminal methods that return promises
 			maybeSingle: async () => ({ data: null, error: null }),
 			single: async () => ({ data: null, error: null }),
-			// when called without chaining, return empty array
-			then: async (resolve) => resolve({ data: [], error: null }),
-		})
-	});
+			upsert: async () => ({ data: null, error: null }),
+			// Allow implicit async resolution (for Promise chaining)
+			then: function(resolve) {
+				return Promise.resolve({ data: [], error: null }).then(resolve);
+			}
+		};
+		return builder;
+	};
+
+	const from = (/*table*/) => createQueryBuilder();
 
 	supabase = { auth, from };
 
