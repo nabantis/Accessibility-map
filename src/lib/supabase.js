@@ -72,7 +72,14 @@ if (useMock) {
 
 	const from = (/*table*/) => createQueryBuilder();
 
-	supabase = { auth, from };
+	// Mock realtime channel for notifications
+	const channel = (/*channelName*/) => ({
+		on: function() { return this; },
+		subscribe: function() { return this; },
+		unsubscribe: function() { return this; }
+	});
+
+	supabase = { auth, from, channel };
 
 } else {
 	supabase = createClient(supabaseUrl, supabaseKey);
