@@ -42,7 +42,7 @@ Email: moderator@bham.ac.uk
 Password: password123
 
 User test account
-Email: user@bham.ac.uk
+Email: test@example.com
 Password: password123
 
 ## Supabase Access
